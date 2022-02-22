@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="_include">
+      <UniqueIdentifier>{dc21c195-268f-4764-8f57-0f014264276e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{569926b8-43a4-4565-9560-77a664020682}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="global.h">
+      <Filter>_include</Filter>
+    </ClInclude>
+    <ClInclude Include="ngx_c_config.h">
+      <Filter>_include</Filter>
+    </ClInclude>
+    <ClInclude Include="tool.h">
+      <Filter>_include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="nginx.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_c_config.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nginx.conf" />
+  </ItemGroup>
+</Project>
