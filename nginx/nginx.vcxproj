@@ -83,11 +83,13 @@
   <ItemGroup>
     <ClInclude Include="global.h" />
     <ClInclude Include="ngx_c_config.h" />
+    <ClInclude Include="ngx_c_log.h" />
     <ClInclude Include="tool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="nginx.cpp" />
     <ClCompile Include="ngx_c_config.cpp" />
+    <ClCompile Include="ngx_c_log.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nginx.conf" />

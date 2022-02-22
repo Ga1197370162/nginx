@@ -18,12 +18,18 @@
     <ClInclude Include="tool.h">
       <Filter>_include</Filter>
     </ClInclude>
+    <ClInclude Include="ngx_c_log.h">
+      <Filter>_include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="nginx.cpp">
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="ngx_c_config.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_c_log.cpp">
       <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,10 +1,14 @@
 #include <iostream>
-#include "ngx_c_config.h"
+
+#include "global.h"
+#include "ngx_c_log.h"
 using namespace myskill;
 
-int main() {
-	ngx_c_config* p = ngx_c_config::GetInstance();
+ngx_c_log* log = ngx_c_log::GetInstance();
 
-	cin.get();
+int main() {
+	NGX_LOG << "helo" << 12 << std::endl;
+
+	std::cin.get();
 	return 0;
 }
