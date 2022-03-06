@@ -7,6 +7,15 @@
     <Filter Include="app">
       <UniqueIdentifier>{569926b8-43a4-4565-9560-77a664020682}</UniqueIdentifier>
     </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{82484c4e-c7bc-43e6-85c4-a567f4277a6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Signal">
+      <UniqueIdentifier>{64a858b7-2432-4f0e-bc50-db6299c17959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pool">
+      <UniqueIdentifier>{773acf0b-5049-4d46-b7b2-51260325c90d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -21,6 +30,12 @@
     <ClInclude Include="ngx_c_log.h">
       <Filter>_include</Filter>
     </ClInclude>
+    <ClInclude Include="ngx_func.h">
+      <Filter>_include</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_pool.h">
+      <Filter>Pool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="nginx.cpp">
@@ -30,7 +45,19 @@
       <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="ngx_c_log.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_log_func.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_signal_func.cpp">
+      <Filter>Signal</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_set_title.cpp">
       <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_pool.cpp">
+      <Filter>Pool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

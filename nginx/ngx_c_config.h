@@ -1,21 +1,17 @@
 #pragma once
 // ≈‰÷√Œƒº˛
-#include <fstream>
-#include <string>
 #include <map>
-#include <stdlib.h>
-#include <mutex>
 
-#include "global.h"
+#include "tool.h"
 
 namespace myskill {
 	using namespace std;
-	class ngx_c_config:public ngx_noncopyable {
+	
+	class ngx_c_config: public ngx_noncopyable {
 		typedef map<const string, string> maptype;
 		typedef pair<const string, string> mapvalue;
 	private:
 		static ngx_c_config* config;
-		static mutex m_thread_mutex;
 		map<const string, string> config_list;
 
 		ngx_c_config();
@@ -25,7 +21,6 @@ namespace myskill {
 		public:
 			DeleteClass() {}
 			~DeleteClass() {
-				unique_lock<mutex> lock(m_thread_mutex);
 				if (config) {
 					delete config;
 					config = nullptr;

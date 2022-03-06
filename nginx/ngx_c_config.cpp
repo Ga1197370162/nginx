@@ -1,8 +1,14 @@
 #include "ngx_c_config.h"
 
+#include <fstream>
+#include <string>
+#include <stdlib.h>
+
+#include "global.h"
+#include "tool.h"
+
 namespace myskill {
 	ngx_c_config* ngx_c_config::config = nullptr;
-	mutex ngx_c_config::m_thread_mutex;
 
 	ngx_c_config::ngx_c_config() {
 		fstream file("nginx.conf");
@@ -41,15 +47,12 @@ namespace myskill {
 		config_list.insert(mapvalue(str.substr(0, index), str.substr(index+1,str.length()-1)));
 	}
 
-	// 线程安全，采用了双锁
 	ngx_c_config* ngx_c_config::GetInstance() {
 		static DeleteClass del;
 		if (config == nullptr) {
-			unique_lock<mutex> lock(m_thread_mutex);
-			if (config == nullptr) {
-				config = new ngx_c_config;
-			}
+			config = new ngx_c_config;
 		}
+		
 		return config;
 	}
 
