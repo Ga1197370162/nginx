@@ -25,7 +25,9 @@ extern class ngx_c_log* log;	//	日志对象
 extern int ngx_log_level;		//	日志定义的最低等级，低于该等级就不会记录日志，采用输出的方式
 
 extern int ngx_argc;			//	指令传参
-extern char** ngx_argv;			//	元素地址
-
+extern char** ngx_argv;			//	传参地址
+extern size_t ngx_title_len;	//	传参长度
 extern char* ngx_environ;		//	环境变量
+extern size_t ngx_env_size;		//	环境变量长度
+
 #endif 

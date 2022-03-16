@@ -1,84 +1,102 @@
 #include "memory_pool.h"
 
-#include <string.h>
-
+#include <iostream>
 #define DEBUG
 
 namespace myskill {
-	p_memeory_pool memeory_c_pool::memory = nullptr;
+	memory_c_pool* memory_c_pool::memory_pool = nullptr;
 
-	p_memeory_pool memeory_c_pool::GetInstance() noexcept {
-		static DeleteThis del;
-		if (memory == nullptr) {
-			memory = new memeory_c_pool();
+	memory_c_pool* memory_c_pool::GetInstance()
+	{
+		static DelClass del;
+		if (!memory_c_pool::memory_pool) {
+			memory_c_pool::memory_pool = new memory_c_pool;
 		}
-		return memory;
+		return memory_c_pool::memory_pool;
 	}
 
-	memeory_c_pool::~memeory_c_pool() noexcept {
-		for (auto small = this->master->SmallMemory.begin(); small != this->master->SmallMemory.end(); small += 1) {
-			if (*small != nullptr) {
-				delete* small;
-				*small = nullptr;
-			}
-		}
-
-		for (auto larger = this->master->LargeMemory; larger && larger->next; larger = larger->next) {
-			auto temp = larger->next;
-			larger->next = temp->next;
-			delete[] temp->memory;
-			temp->memory = nullptr;
-			delete temp;
-			temp = nullptr;
-		}
-
-		if (this->master->LargeMemory) {
-			delete this->master->LargeMemory->memory;
-			this->master->LargeMemory->memory = nullptr;
-			delete this->master->LargeMemory;
-			this->master->LargeMemory = nullptr;
-		}
-
-		delete master;
-		master = nullptr;
-	}
-
-	void* memeory_c_pool::AllocMemory(size_t m_size) {
+	void* memory_c_pool::AllocMemory(size_t size)
+	{
 		// 申请的是大块内存
-		m_size = m_size <= 0 ? 1 : m_size > MEMORY_LARGER_LIMIT ? MEMORY_LARGER_LIMIT : m_size;		//	边界值设定
+		if (static_cast<int>(MemoryConfig::MAX_SIZE) < size) {
+			void* p = new char[size];
+			memset(p, '\0', size);
+			manage->larger.insert(p);
+			return p;
+		}
+		else {		// 小块内存
+			// 将申请的内存块向上取整，找到对应区块
+			size_t real_size = RoundUp(size);
+			unsigned char index = real_size / static_cast<size_t>(MemoryConfig::ALIGN) - 1;
+			p_obj p = free_list[index];
+			if (p) {
+				free_list[index] = p->free_list_link;
+				return p;
+			}
+			else {
+				// 当前链表中没有内存，就去内存池里找
+				if (heap_size >= real_size) {
+					void* p = free_start;
+					free_start = free_start + real_size;
+					heap_size -= real_size;
+					return p;
+				}
 
-		if (m_size > SMALL_SIZE_MAX) {
-			auto p = this->master->LargeMemory;
-			for (; p && p->next; p = p->next);		//	先移动到最后
-			if (p) {		//	已经存在大块内存
-				p->next = new m_memory_large;
-				p->next->memory = new char[m_size];
-				memset(p->next->memory, '\0', m_size);
-				return p->next->memory;
-			}
-			else {			//	没有存储大块内存
-				this->master->LargeMemory = new m_memory_large;		//	为了异常安全，申请的内存出错也没事，类析构后会自动调用delete
-				this->master->LargeMemory->memory = new char[m_size];
-				memset(this->master->LargeMemory->memory,'\0', m_size);
-				return this->master->LargeMemory->memory;
-			}
-		} else {		//	否则分配的就是小内存块
-			auto p = this->master->SmallMemory;
-			size_t current_larger = SMALL_SIZE_MIN;					//	记录当前这块区域是何种分配大小
-			size_t index = 0;										//	表示申请的小块内存对应的存储区域
-			for (; current_larger < m_size; current_larger = current_larger << 1 , index += 1) {}
-			p_memory_small p_memory = p[index];
-			if (p_memory == nullptr) {								//	当前这块内存还是空悬状态
-				p_memory = new m_memory_small(current_larger);
-				return SmallAllocMemory(p_memory, current_larger);
-			}
-			else {		//	已经初始化内存
-
+				return FillUpMemory(index, real_size);
 			}
 		}
+		return nullptr;
 	}
 
-	void* memeory_c_pool::SmallAllocMemory(p_memory_small p_memory,size_t current_larger) {
+	void* memory_c_pool::FillUpMemory(int index, size_t size)
+	{
+		// 内存池中可能有剩余残留空间，但无法分配给用户,直接将这块内存存储到合适链表中去
+		if (heap_size != 0) {
+			unsigned char heap_index = RoundDown(heap_size) / static_cast<size_t>(MemoryConfig::ALIGN) - 1;
+			p_obj p = static_cast<p_obj>(free_start);
+			p->free_list_link = free_list[heap_index];
+			free_list[heap_index] = p;
+			heap_size = 0;
+		}
+
+		// 申请21块这类型大小的内存，10块预留给内存池，10块用来填充对应链表，还有一块分配给用户
+		p_larger_memory p = new m_larger_memory(size * 21);
+		if (manage->new_memory) {
+			p->next = manage->new_memory;
+		}
+		manage->new_memory = p;
 		
+		// 将分配的内存放到链表中去
+		void* ptr = p->p_memory + size;
+		for (int i = 0; i < 10; i++) {
+			p_obj m = static_cast<p_obj>(ptr);
+			m->free_list_link = free_list[index];
+			free_list[index] = m;
+			ptr = ptr + size;
+		}
+
+		// 补充内存池
+		free_start = ptr;
+		free_end = p->p_memory + (size * 21);
+		heap_size = size * 10;
+
+		return p->p_memory;
+	}
+
+	void memory_c_pool::FreeMemory(void* p,size_t size)
+	{
+		// 归还大块内存
+		if (static_cast<int>(MemoryConfig::MAX_SIZE) < size) {
+			delete[] p;
+			manage->larger.erase(manage->larger.find(p));
+		}
+		else {
+			size_t real_size = RoundUp(size);
+			unsigned char index = real_size / static_cast<size_t>(MemoryConfig::ALIGN) - 1;
+			p_obj ptr = static_cast<p_obj>(p);
+
+			ptr->free_list_link = free_list[index];
+			free_list[index] = ptr;
+		}
 	}
 }

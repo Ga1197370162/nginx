@@ -1,4 +1,3 @@
-#pragma once
 #include <ctime>
 #include <string.h>		// memset
 #include <iostream>

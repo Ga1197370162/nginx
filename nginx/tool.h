@@ -3,6 +3,7 @@
 #define __TOOL_H__
 
 namespace myskill {
+	using namespace std;
 	//	²»¿É¸´ÖÆ
 	using ngx_noncopyable = class noncopyable {
 	private:
@@ -20,6 +21,6 @@ namespace myskill {
 	{
 		return std::unique_ptr<T>(new T(forward<Ts>(params)...));
 	}
-#endif 
+#endif
 }
 #endif
