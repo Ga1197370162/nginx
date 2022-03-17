@@ -124,7 +124,7 @@ namespace myskill {
 	//	外部接口，用于只需通过该接口获取内存
 	template<typename T>
 	T* make_memory(size_t size = 1) {
-		//std::lock_guard<mutex> lock(thread_mutex);
+		std::lock_guard<mutex> lock(thread_mutex);
 		size_t real_size = size * sizeof(T);
 		T* p = static_cast<T*>(memory_c_pool::GetInstance()->AllocMemory(real_size));
 		memset(p, '\0', real_size);
@@ -134,7 +134,7 @@ namespace myskill {
 	//	归还内存，以便下次使用
 	template<typename T>
 	void free_memory(T* p, size_t size = 1) {
-		//std::lock_guard<mutex> lock(thread_mutex);
+		std::lock_guard<mutex> lock(thread_mutex);
 		memory_c_pool::GetInstance()->FreeMemory(static_cast<void*>(p), size * sizeof(T));
 	}
 }

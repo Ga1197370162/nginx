@@ -16,6 +16,9 @@
     <Filter Include="Pool">
       <UniqueIdentifier>{773acf0b-5049-4d46-b7b2-51260325c90d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="proc">
+      <UniqueIdentifier>{3fb5e2ba-687f-4a55-b296-ddf80ab75d04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -58,6 +61,15 @@
     </ClCompile>
     <ClCompile Include="memory_pool.cpp">
       <Filter>Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_process_cycle.cpp">
+      <Filter>proc</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_process_event.cpp">
+      <Filter>proc</Filter>
+    </ClCompile>
+    <ClCompile Include="ngx_process_daemon.cpp">
+      <Filter>proc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

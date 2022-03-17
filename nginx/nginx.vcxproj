@@ -94,13 +94,25 @@
     <ClCompile Include="ngx_c_config.cpp" />
     <ClCompile Include="ngx_c_log.cpp" />
     <ClCompile Include="ngx_log_func.cpp" />
+    <ClCompile Include="ngx_process_daemon.cpp" />
+    <ClCompile Include="ngx_process_event.cpp" />
+    <ClCompile Include="ngx_process_cycle.cpp" />
     <ClCompile Include="ngx_set_title.cpp" />
     <ClCompile Include="ngx_signal_func.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nginx.conf" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <LibraryDependencies>pthread;%(LibraryDependencies)</LibraryDependencies>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

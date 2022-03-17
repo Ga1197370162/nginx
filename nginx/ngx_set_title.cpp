@@ -50,19 +50,25 @@ namespace myskill {
 		return;
 	}
 
-	void NgxSetTitle(string&& title) {
-		size_t new_title_len = title.length();
+	void NgxSetTitle(const string& title) {
+		string default_head = "nginx: ";
+
+		size_t new_title_len = default_head.length() + title.length();
 		size_t all_len = ngx_title_len + ngx_env_size;
 		// 设置的新标题太长了
 		if (new_title_len >= all_len) {
 			return;
 		}
+
+		default_head += title;
 		ngx_argv[1] = nullptr;
 		char* p = ngx_argv[0];
-		strcpy(p, title.c_str());
+		strcpy(p, default_head.c_str());
 		p += new_title_len;
 		all_len -= new_title_len;
+		// 将后面的所有参数清空
 		memset(p, '\0', all_len);
+
 		return;
 	}
 }

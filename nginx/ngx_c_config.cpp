@@ -13,6 +13,10 @@ namespace myskill {
 	ngx_c_config::ngx_c_config() {
 		fstream file("nginx.conf");
 		
+		if (!file.is_open()) {
+			exit(0);
+		}
+
 #ifdef DEBUG
 		if (!file) {
 
